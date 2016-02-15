@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html ng-app="testApp" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello</title>
+</head>
+<body>
+  <div ng-controller="helloCtrl">
+    <p ng-bind="foo | UpperOrLowerCase:'l'"></p>
+  </div>
+  <div ng-controller="getDataCtrl">
+    <lalala info="obj"></lalala>
+  </div>
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script>
+    angular.module('myApp.something', [])
+    .controller('helloCtrl', function($scope, $http) {
+      $scope.foo = 'Hello';
+    })
+    .controller('getDataCtrl', function($http, $scope, Item, API) {
+      Item.list(API.LIST_URL).then(function(data) {
+        $scope.display = data.str1;
+        $scope.obj = data.obj;
+      });
+    })
+    .factory('Item', function($http) {
+      return {
+        list: function(url) {
+          return $http({
+            url: url,
+            method: 'get',
+          }).then(function(res) {
+            return res.data;
+          });
+        },
+        data: function() {
+        },
+      }
+    })
+    .directive('lalala', function() {
+      return {
+        templateUrl: 'directives/lalala.html',
+        scope: {
+          list: '=info',
+        },
+        link: function(scope, element, attr) {
+          console.log(scope);
+        }
+      };
+    })
+    .filter('UpperOrLowerCase', function() {
+      return function(text, type) {
+        switch(type) {
+          case 'u':
+            return text + '123';
+          case 'l':
+            return text + '456';
+          default:
+            return 789;
+        }
+      }
+    })
+    .constant('API', {
+      LIST_URL: '/data/test.json',
+    });
+
+
+    angular.module('testApp', [
+      'myApp.something',
+    ]);
+  </script>
+</body>
+</html>
