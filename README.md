@@ -6,6 +6,8 @@ Install tools
   $ npm install -g node-static bower
 ```
 
+Install dependence and start
+
 ```bash
   $ bower install
   $ static .
